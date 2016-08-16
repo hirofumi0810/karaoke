@@ -8,6 +8,10 @@ import pylab
 
 
 def cepstrum(filename, start_time, end_time):
+    """
+    ケプストラムを推定
+    """
+
     wavfile = wave.open(filename, "r")
     fs = wavfile.getframerate()  # サンプリング周波数
     nsamples = wavfile.getnframes()  # サンプル数
@@ -53,17 +57,34 @@ def cepstrum(filename, start_time, end_time):
     pylab.xlabel("Frequency{Hz]")
     pylab.ylabel("log Amplitude Spectrum[dB]")
     pylab.xlim([0, fs / 2.0])  # ナイキスト周波数まで
-    pylab.show()
+    pylab.savefig("graph/cepstrum/" + filename.split("/")[1].split(".")[0] + ".png")
+    # pylab.show()
 
 
 if __name__ == "__main__":
     argv = sys.argv
-    if len(argv) != 4:
+
+    if not len(argv) in [2, 4]:
         print "Invalid arguments."
-        print "Usage: python cepstrum.py <input_filename> from <start> to <end>"
+        print "Usage: python cepstrum.py <input_filename> (from <start> to <end>)"
         exit()
 
     filename = argv[1]
-    start = float(argv[2])
-    end = float(argv[3])
-    cepstrum(filename, start, end)  # 区間を指定してケプストラム分析
+
+    if len(argv) == 2:
+        start = 0
+        wavfile = wave.open(filename, "r")
+        fs = wavfile.getframerate()  # サンプリング周波数
+        nsamples = wavfile.getnframes()  # サンプル数
+        x = wavfile.readframes(nsamples)
+        x = np.frombuffer(x, dtype="int16") / 32768.0  # [-1, +1]に正規化
+        wavfile.close()
+        length = len(x) / fs
+        end = length
+
+    elif len(argv) == 4:
+        start = float(argv[2])
+        end = float(argv[3])
+
+    # 区間を指定してケプストラム分析
+    cepstrum(filename, start, end)

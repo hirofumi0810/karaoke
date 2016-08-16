@@ -8,7 +8,11 @@ import matplotlib.pyplot as plt
 import pitch  # 音高を抽出するモジュール(関数is_peakを使用)
 
 
-def zerocross(waveform, sampling_rate):
+def zerocross(waveform, sampling_rate, filename):
+    """
+    ゼロ交差数を推定
+    """
+
     # 短時間フレームごとに基本周波数を推定(非発音区間・無声部の基本周波数は0)
     frame = 30  # 分割フレーム数
     N = len(waveform) / frame  # フレーム幅
@@ -59,9 +63,9 @@ def zerocross(waveform, sampling_rate):
     plt.subplot(211)
     sampling_interval = 1.0 / sampling_rate
     times = np.arange(len(result)) * sampling_interval
-    plt.title("Pitch")
+    plt.title("Pitch (" + filename + ")")
     plt.plot(times, result)
-    plt.xlabel("Time[sec]")
+    # plt.xlabel("Time[sec]")
     plt.ylabel("F0[Hz]")
     plt.xlim([0, len(result) * sampling_interval])
 
@@ -88,11 +92,13 @@ def zerocross(waveform, sampling_rate):
     plt.ylabel("Frequency[Hz]")
     plt.xlim([0, times[-1]])
     plt.ylim([0, 1000])
-    plt.show()
+    plt.savefig("graph/zerocross/" + filename.split("/")[1].split(".")[0] + ".png")
+    # plt.show()
 
 
 if __name__ == "__main__":
     argv = sys.argv
+
     if len(argv) != 2:
         print "Invalid arguments."
         print "Usage: python zerocross.py <input_filename>"
@@ -101,4 +107,4 @@ if __name__ == "__main__":
     filename = argv[1]
     sampling_rate, waveform = scipy.io.wavfile.read(filename)
     waveform = waveform / 32768.0
-    zerocross(waveform, sampling_rate)
+    zerocross(waveform, sampling_rate, filename)

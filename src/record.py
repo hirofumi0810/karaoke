@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import pyaudio
 import wave
+import pyaudio
 
 SAMPLING_RATE = 48000  # Hz
 QUANTIZATION_BITS = 16  # bits
 CHANNELS = 1  # monaural
+BUF_SIZE = 1024
 
 # 録音用のバッファのサイズ．単位はサンプル1
 # バッファサイズ・遅延・音飛びには以下の関係がある
@@ -16,10 +17,13 @@ CHANNELS = 1  # monaural
 # バッファサイズ     大     ---     小
 # 遅延              小     ---     大
 # 音飛び       起こりにくい --- 起こりやすい
-BUF_SIZE = 1024
 
 
 def record(seconds, filename):
+    """
+    WAVファイルに録音
+    """
+
     # WAVファイルを開き，フォーマットなどを書き込む
     wavfile = wave.open(filename, 'wb')
     wavfile.setframerate(SAMPLING_RATE)
@@ -50,9 +54,8 @@ def record(seconds, filename):
 
 
 if __name__ == "__main__":
-    argv = sys.argv  # コマンドライン引数．最初の要素はスクリプト名
+    argv = sys.argv
 
-    # 2つの引数をとるので，スクリプト名も含めてln(argv)が3でなければ終了
     if len(argv) != 3:
         print "Invalid arguments."
         print "Usage: python record.py <record_seconds> <output_filename>"

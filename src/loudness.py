@@ -2,12 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import wave
 import numpy as np
 import matplotlib.pyplot as plt
-import wave
 
 
 def loudness(filename):
+    """
+    音量を推定
+    """
+
     wavfile = wave.open(filename, "r")
     fs = wavfile.getframerate()  # サンプリング周波数
     nsamples = wavfile.getnframes()  # サンプル数
@@ -35,17 +39,19 @@ def loudness(filename):
 
     length = float(len(x) / fs)  # 音声の長さ
     times = np.arange(len(result)) * length / frame
-    plt.title("Loudness")
+    plt.title("Loudness (" + filename + ")")
     plt.plot(times, result)
     plt.xlabel("Time[sec]")
     plt.ylabel("Loudness[dB]")
     plt.xlim([0, length])
     plt.ylim([-100, max(result) + 10])
-    plt.show()
+    plt.savefig("graph/loudness/" + filename.split("/")[1].split(".")[0] + ".png")
+    # plt.show()
 
 
 if __name__ == "__main__":
     argv = sys.argv
+
     if len(argv) != 2:
         print "Invalid arguments."
         print "Usage: python loudness.py <input_filename>"

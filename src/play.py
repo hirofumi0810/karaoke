@@ -9,6 +9,10 @@ BUF_SIZE = 1024  # samples, must be >= 64
 
 
 def play(filename):
+    """
+    WAVファイルを再生
+    """
+
     # WAVファイルを開き，フォーマットなどを読み込む
     wavfile = wave.open(filename, 'rb')
     nchannels = wavfile.getnchannels()
@@ -16,9 +20,9 @@ def play(filename):
     quantization_bits = wavfile.getsampwidth() * 8
     sample_width = wavfile.getsampwidth()
     nsamples = wavfile.getnframes()
-    # length = float(nsamples / sampling_rate) # 音声の長さ
-    # start = int(nsamples * start_time / length) # 開始フレーム
-    # end = int(nsamples * end_time / length) # 終了フレーム
+    # length = float(nsamples / sampling_rate)  # 音声の長さ
+    # start = int(nsamples * start_time / length)  # 開始フレーム
+    # end = int(nsamples * end_time / length)  # 終了フレーム
 
     print "%s:" % filename
     print "Channels: %d" % nchannels
@@ -57,6 +61,6 @@ if __name__ == "__main__":
         exit()
 
     filename = argv[1]
-    #start = float(argv[2])
-    #end = float(argv[3])
+    # start = float(argv[2])
+    # end = float(argv[3])
     play(filename)

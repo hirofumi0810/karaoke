@@ -7,8 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# 配列aのindex順目の要素がピーク(両隣よりも大きい)であればTrueを返す
 def is_peak(a, index):
+    """
+    配列aのindex順目の要素がピーク(両隣よりも大きい)であればTrueを返す
+    """
+
     if index == 0:
         return False
     elif index == len(a) - 1:
@@ -20,7 +23,11 @@ def is_peak(a, index):
             return False
 
 
-def pitch(waveform, sampling_rate):
+def pitch(waveform, sampling_rate, filename):
+    """
+    音高を推定
+    """
+
     # 短時間フレームごとに基本周波数を推定
     frame = 100  # 分割フレーム数
     N = len(waveform) / frame  # フレーム幅
@@ -51,16 +58,18 @@ def pitch(waveform, sampling_rate):
 
     sampling_interval = 1.0 / sampling_rate
     times = np.arange(len(result)) * sampling_interval
-    plt.title("Pitch")
+    plt.title("Pitch (" + filename + ")")
     plt.plot(times, result)
     plt.xlabel("Time[sec]")
     plt.ylabel("F0[Hz]")
     plt.xlim([0, len(result) * sampling_interval])
-    plt.show()
+    plt.savefig("graph/pitch/" + filename.split("/")[1].split(".")[0] + ".png")
+    # plt.show()
 
 
 if __name__ == "__main__":
     argv = sys.argv
+
     if len(argv) != 2:
         print "Invalid arguments."
         print "Usage: python pitch.py <input_filename>"
@@ -69,4 +78,5 @@ if __name__ == "__main__":
     filename = argv[1]
     sampling_rate, waveform = scipy.io.wavfile.read(filename)
     waveform = waveform / 32768.0
-    pitch(waveform, sampling_rate)
+
+    pitch(waveform, sampling_rate, filename)
